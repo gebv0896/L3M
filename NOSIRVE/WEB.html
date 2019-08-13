@@ -26,6 +26,13 @@
         <input type="button" value="Eliminar" onclick="eliminar();" />
     </div>
 
+    <div>
+        <h2>Buscar un Producto por ID</h2>
+        <input type="text" id="input_search" size="20" />
+        <input type="button" value="Buscar" onclick="buscar();" />
+        <p id="mostrar_producto">
+    </div>
+
     <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
     <script>
         var url = 'api/L3M';
@@ -39,7 +46,7 @@
         });
 
         function formatear(item) {
-            return item.Nombre + ' $' + item.Precio + ' -> Unidades en Almacen: ' + item.UnidadesEnAlmacen + ' ID: '+ item.ID_prod;
+            return item.Nombre + ' $' + item.Precio + ' -> Unidades en Almacen: ' + item.UnidadesEnAlmacen + ' ID: ' + item.ID_prod;
         }
 
 
@@ -51,7 +58,7 @@
 
             if (nombre != "" && precio != "" && unidades != "") {
                 var Producto = {
-                    ID_prod:id_prod,
+                    ID_prod: id_prod,
                     Nombre: nombre,
                     Precio: precio,
                     UnidadesEnAlmacen: unidades
@@ -80,7 +87,7 @@
         }
 
         function eliminar() {
-            
+
             var id_del = $('#input_IDdelete').val();
 
             if (id_del != "") {
@@ -104,6 +111,21 @@
                 );
             } else {
                 alert("Todos los campos son obligatorios.");
+            }
+        }
+
+        function buscar() {
+
+            var id_search = $('#input_search').val();
+
+            if (id_search != "") {
+
+
+                    $(document).ready(function () {
+                    $.getJSON('api/L3M/' + id_search).done(function (data) {
+                            $('#mostrar_producto').text(formatear(data));
+                        })
+                    })
             }
         }
     </script>

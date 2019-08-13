@@ -24,6 +24,8 @@ namespace NOSIRVE.Controllers
 
         // GET: api/L3M/5
         [ResponseType(typeof(Producto))]
+        [HttpGet]
+        [Route("api/L3M/{id}")]
         public IHttpActionResult GetProducto(int id)
         {
             Producto producto = db.Productos.Find(id);
