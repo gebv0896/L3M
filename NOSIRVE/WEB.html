@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Productos</title>
+</head>
+<body>
+
+    <div>
+        <h2>Todos los Productos</h2>
+        <ul id="productos"></ul>
+    </div>
+
+    <div>
+        <h2>Agregar Nuevo Producto</h2>
+        <input type="text" id="input_nombre" size="20" />
+        <input type="text" id="input_precio" size="20" />
+        <input type="text" id="input_unidades" size="20" />
+        <input type="text" id="input_id" size="20" />
+        <input type="button" value="Agregar" onclick="agregar();" />
+    </div>
+
+    <div>
+        <h2>Eliminar un Producto</h2>
+        <input type="text" id="input_IDdelete" size="20" />
+        <input type="button" value="Eliminar" onclick="eliminar();" />
+    </div>
+
+    <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+    <script>
+        var url = 'api/L3M';
+        $(document).ready(function () {
+            $.getJSON(url)
+                .done(function (data) {
+                    $.each(data, function (key, item) {
+                        $('<li>', { text: formatear(item) }).appendTo($('#productos'));
+                    });
+                });
+        });
+
+        function formatear(item) {
+            return item.Nombre + ' $' + item.Precio + ' -> Unidades en Almacen: ' + item.UnidadesEnAlmacen + ' ID: '+ item.ID_prod;
+        }
+
+
+        function agregar() {
+            var nombre = $('#input_nombre').val();
+            var precio = $('#input_precio').val();
+            var unidades = $('#input_unidades').val();
+            var id_prod = $('#input_id').val();
+
+            if (nombre != "" && precio != "" && unidades != "") {
+                var Producto = {
+                    ID_prod:id_prod,
+                    Nombre: nombre,
+                    Precio: precio,
+                    UnidadesEnAlmacen: unidades
+                };
+
+                var info = JSON.stringify(Producto);
+                $.ajax({
+                    url: 'api/L3M',
+                    cache: false,
+                    type: 'POST',
+                    contentType: 'application/json; charset=utf-8',
+                    data: info,
+                    dataType: 'json',
+                    success: function (data) {
+                        alert("El registro se agrego con exito!.");
+                        location.reload();
+                    }
+                }).fail(
+                    function (xhr, textStatus, err) {
+                        alert(err);
+                    }
+                );
+            } else {
+                alert("Todos los campos son obligatorios.");
+            }
+        }
+
+        function eliminar() {
+            
+            var id_del = $('#input_IDdelete').val();
+
+            if (id_del != "") {
+
+                var info = JSON.stringify(id_del);
+                $.ajax({
+                    url: 'api/L3M/' + id_del,
+                    cache: false,
+                    type: 'DELETE',
+                    contentType: 'application/json; charset=utf-8',
+                    data: info,
+                    dataType: 'json',
+                    success: function (data) {
+                        alert("El registro se eliminó con exito!.");
+                        location.reload();
+                    }
+                }).fail(
+                    function (xhr, textStatus, err) {
+                        alert(err);
+                    }
+                );
+            } else {
+                alert("Todos los campos son obligatorios.");
+            }
+        }
+    </script>
+</body>
+</html>
