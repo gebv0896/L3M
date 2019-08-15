@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
@@ -39,12 +40,20 @@ namespace NOSIRVE.Controllers
 
         // PUT: api/L3M/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutProducto(int id, Producto producto)
+        [HttpPut]
+        [Route("api/L3M/{id}")]
+        public IHttpActionResult PutProducto(Producto producto)
         {
+            int id = producto.ID_prod;
+            Debug.WriteLine("ID_prod:" + producto.ID_prod);
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+
+            Debug.WriteLine("id:"+id);
+            Debug.WriteLine("ID_prod:"+producto.ID_prod);
 
             if (id != producto.ID_prod)
             {
@@ -68,8 +77,8 @@ namespace NOSIRVE.Controllers
                     throw;
                 }
             }
-
-            return StatusCode(HttpStatusCode.NoContent);
+            return Ok(producto);
+       
         }
 
         // POST: api/L3M
@@ -98,7 +107,6 @@ namespace NOSIRVE.Controllers
                     throw;
                 }
             }
-
             return CreatedAtRoute("DefaultApi", new { id = producto.ID_prod }, producto);
         }
 

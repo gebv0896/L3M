@@ -33,6 +33,15 @@
         <p id="mostrar_producto">
     </div>
 
+    <div>
+        <h2>Modificar producto</h2>
+        <input type="text" id="input_nombreNuevo" size="15" />
+        <input type="text" id="input_precioNuevo" size="25" />
+        <input type="text" id="input_unidadesNuevo" size="35" />
+        <input type="text" id="input_change" size="10" />
+        <input type="button" value="Modificar" onclick="modificar();" />
+    </div>
+
     <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
     <script>
         var url = 'api/L3M';
@@ -46,9 +55,9 @@
         });
 
         function formatear(item) {
-            return item.Nombre + ' $' + item.Precio + ' -> Unidades en Almacen: ' + item.UnidadesEnAlmacen + ' ID: ' + item.ID_prod;
+            return item.Nombre + ' ₡' + item.Precio + ' -> Unidades en Almacen: ' +
+                item.UnidadesEnAlmacen + ' -> ID: ' + item.ID_prod;
         }
-
 
         function agregar() {
             var nombre = $('#input_nombre').val();
@@ -56,7 +65,7 @@
             var unidades = $('#input_unidades').val();
             var id_prod = $('#input_id').val();
 
-            if (nombre != "" && precio != "" && unidades != "") {
+            if (nombre != "" && precio != "" && unidades != "" && id_prod != "") {
                 var Producto = {
                     ID_prod: id_prod,
                     Nombre: nombre,
@@ -115,17 +124,53 @@
         }
 
         function buscar() {
-
             var id_search = $('#input_search').val();
 
             if (id_search != "") {
 
 
-                    $(document).ready(function () {
+                $(document).ready(function () {
                     $.getJSON('api/L3M/' + id_search).done(function (data) {
-                            $('#mostrar_producto').text(formatear(data));
-                        })
+                        $('#mostrar_producto').text(formatear(data));
                     })
+                })
+            }
+        }
+
+        function modificar() {
+            var nombre = $('#input_nombreNuevo').val();
+            var precio = $('#input_precioNuevo').val();
+            var unidades = $('#input_unidadesNuevo').val();
+            var id_Acambiar = $('#input_change').val();
+
+            if (nombre != "" && precio != "" && unidades != "" && id_Acambiar!="") {
+                var Producto = {
+                    ID_prod: id_Acambiar,
+                    Nombre: nombre,
+                    Precio: precio,
+                    UnidadesEnAlmacen: unidades
+                };
+
+  
+                var info = JSON.stringify(Producto);
+                $.ajax({
+                    url: 'api/L3M/' + id_Acambiar,
+                    cache: false,
+                    type: 'PUT',
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    data: info,
+                    success: function (data) {
+                        alert("El registro se agrego con exito!.");
+                        location.reload();
+                    }
+                }).fail(
+                    function (xhr, textStatus, err) {
+                        alert(err);
+                    }
+                );
+            } else {
+                alert("Todos los campos son obligatorios.");
             }
         }
     </script>
